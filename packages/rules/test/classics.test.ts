@@ -45,7 +45,7 @@ function playOut(game: AnyGame, levels: [BotLevel, BotLevel], seed: number, maxS
 
 describe('every classic', () => {
   it('ships all six in shelf order with unique ids', () => {
-    expect(CLASSICS.map((g) => g.id)).toEqual(['drop-four', 'fleet-fight', 'dots-and-boxes', 'ultimate-noughts', 'mancala', 'trivia-duel']);
+    expect(CLASSICS.map((g) => g.id)).toEqual(['drop-four', 'fleet-fight', 'dots-and-boxes', 'ultimate-noughts', 'mancala', 'trivia-duel', 'chess']);
   });
 
   for (const game of CLASSICS) {

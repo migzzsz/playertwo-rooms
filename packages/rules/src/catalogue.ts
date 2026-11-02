@@ -3,6 +3,7 @@ import { dropFour } from './games/drop-four';
 import { fleetFight } from './games/fleet-fight';
 import { mancala } from './games/mancala';
 import { triviaDuel } from './games/trivia-duel';
+import { chess } from './games/chess';
 import { ultimateNoughts } from './games/ultimate-noughts';
 import { crazyEights } from './cards/crazy-eights';
 import { ginRummy } from './cards/gin-rummy';
@@ -10,8 +11,8 @@ import { speed } from './cards/speed';
 import { war } from './cards/war';
 import type { GameDef } from './types';
 
-/** The six classics in shelf order. */
-export const CLASSICS = [dropFour, fleetFight, dotsAndBoxes, ultimateNoughts, mancala, triviaDuel] as const;
+/** The classics in shelf order. */
+export const CLASSICS = [dropFour, fleetFight, dotsAndBoxes, ultimateNoughts, mancala, triviaDuel, chess] as const;
 export type ClassicId = (typeof CLASSICS)[number]['id'];
 
 // The catalogue is used generically (any game, any state), so states are opaque here.

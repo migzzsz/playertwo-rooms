@@ -15,6 +15,7 @@ export { ultimateNoughts, legalSquares, type UltimateNoughtsState, type Ultimate
 export { mancala, legalPits, storeOf, type MancalaState, type MancalaAction } from './games/mancala';
 export { triviaDuel, correctSlot, currentQuestion, BOT_ACCURACY, TRIVIA_ROUNDS, type TriviaDuelState, type TriviaDuelAction } from './games/trivia-duel';
 export { TRIVIA_BANK } from './games/trivia-bank';
+export { chess, chessBotMove, chessFromBoard, legalMoves, movesFrom, inCheck, attacked, colourOfSeat, SQUARE_NAMES, type ChessState, type ChessAction, type ChessMove, type Promo } from './games/chess';
 export { CLASSICS, CARD_GAMES, classicById, gameById, type ClassicId, type CardGameId } from './catalogue';
 export { DECK_SIZE, HIDDEN, rankOf, suitOf, cardName, cardLabel, SUIT_SYMBOLS, SUIT_NAMES, RANK_LABELS } from './cards/deck';
 export { crazyEights, legalCards, playable, canDraw, handPenalty, type CrazyEightsState, type CrazyEightsAction } from './cards/crazy-eights';
