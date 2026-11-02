@@ -173,8 +173,27 @@ describe('Date Night deck session', () => {
   });
 
   it('eligible cards respect the current level', () => {
-    const s = startSession(ready((x) => (x.start = 0)), 'spicy', 1)!;
+    const s = startSession(ready((x) => (x.start = 0)), 'romantic', 1)!;
+    expect(eligibleCards(s).length).toBeGreaterThan(0);
     expect(eligibleCards(s).every((p) => p.min === 0)).toBe(true);
+  });
+
+  it('a deck with nothing at the starting level starts at its lowest level instead of "no cards left"', () => {
+    // Spicy has no Mild cards; the defaults start at Mild.
+    const s = startSession(ready((x) => (x.start = 0)), 'spicy', 1)!;
+    const cards = eligibleCards(s);
+    expect(cards.length).toBeGreaterThan(0);
+    expect(new Set(cards.map((p) => p.min)).size).toBe(1);
+    expect(reduceSession(s, { type: 'draw' })!.current).not.toBeNull();
+  });
+
+  it('changing boundaries clears "no cards left", so play can carry on', () => {
+    let s = startSession(ready((x) => (x.players[0].exclusions = ['e', 'a', 'o', 'i', 'u'])), 'romantic', 1)!;
+    s = reduceSession(s, { type: 'draw' })!;
+    expect(s.empty).toBe(true);
+    s = reduceSession(s, { type: 'update-settings', settings: ready() })!;
+    expect(s.empty).toBe(false);
+    expect(reduceSession(s, { type: 'draw' })!.current).not.toBeNull();
   });
 });
 

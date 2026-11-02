@@ -38,6 +38,8 @@ interface SeatSlot {
   conn: Conn | null;
   /** When the player dropped, or null while connected. */
   leftAt: number | null;
+  /** Left on purpose with Leave game (as opposed to a dropped connection). */
+  gone?: boolean;
 }
 
 interface Room {
@@ -124,7 +126,7 @@ export class RoomHub {
       case 'rematch':
         return this.askRematch(conn);
       case 'leave':
-        return this.disconnect(conn);
+        return this.leave(conn);
       default:
         return conn.send({ type: 'error', code: 'bad_request' });
     }
@@ -139,6 +141,27 @@ export class RoomHub {
     if (!room || !slot || slot.conn !== conn) return;
     slot.conn = null;
     slot.leftAt = this.now();
+    this.other(room, at.seat)?.conn?.send({ type: 'presence', opponent: 'left' });
+    this.broadcast(room);
+  }
+
+  /** Leave game on purpose: no two-minute hold. A game in progress goes to the other player at once. */
+  leave(conn: Conn): void {
+    const at = this.where.get(conn);
+    const room = at ? this.rooms.get(at.code) : undefined;
+    const slot = at && room ? room.seats[at.seat] : undefined;
+    if (!at || !room || !slot || slot.conn !== conn) return this.disconnect(conn);
+    this.where.delete(conn);
+    slot.conn = null;
+    slot.leftAt = this.now();
+    slot.gone = true;
+    slot.token = ''; // the seat can't be reclaimed
+    room.rematch = [false, false];
+    if (this.seatsFull(room) && !room.settled) {
+      room.forfeit = at.seat;
+      this.settle(room, (1 - at.seat) as Seat);
+    }
+    room.seq++;
     this.other(room, at.seat)?.conn?.send({ type: 'presence', opponent: 'left' });
     this.broadcast(room);
   }
@@ -240,6 +263,7 @@ export class RoomHub {
     const at = this.where.get(conn);
     const room = at && this.rooms.get(at.code);
     if (!at || !room || !room.settled) return conn.send({ type: 'error', code: 'illegal' });
+    if (room.seats.some((s) => s?.gone)) return conn.send({ type: 'error', code: 'illegal' });
     room.rematch[at.seat] = true;
     room.lastActive = this.now();
     if (room.rematch[0] && room.rematch[1]) {
@@ -288,7 +312,7 @@ export class RoomHub {
   }
 
   private broadcast(room: Room) {
-    const seats = room.seats.map((s): SeatInfo | null => (s ? { name: s.name, present: Boolean(s.conn) } : null)) as [SeatInfo | null, SeatInfo | null];
+    const seats = room.seats.map((s): SeatInfo | null => (s ? { name: s.name, present: Boolean(s.conn), ...(s.gone ? { gone: true } : {}) } : null)) as [SeatInfo | null, SeatInfo | null];
     for (const seat of [0, 1] as Seat[]) {
       const conn = room.seats[seat]?.conn;
       if (!conn) continue;

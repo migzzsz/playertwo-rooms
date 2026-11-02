@@ -111,7 +111,15 @@ export function currentLevel(s: DateSessionState): Intensity {
 export function eligibleCards(s: DateSessionState): Prompt[] {
   const level = currentLevel(s);
   const pool = s.deck === 'custom' ? s.custom : [...PROMPTS, ...(s.extra ?? [])].filter((p) => p.pool === 'spark' && p.decks.includes(s.deck as DeckId));
-  return pool.filter((p) => allowed(p, s.settings, level));
+  const now = pool.filter((p) => allowed(p, s.settings, level));
+  if (now.length) return now;
+  // Some decks have nothing at the gentlest level (Spicy starts at Flirty). Rather than calling the
+  // deck empty, start from the lowest level it does have, never past what both players allow.
+  const top = levelAt(s.settings, 1);
+  const within = pool.filter((p) => allowed(p, s.settings, top));
+  if (!within.length) return [];
+  const lowest = Math.min(...within.map((p) => p.min));
+  return within.filter((p) => p.min === lowest);
 }
 
 function toDrawn(p: Prompt, checkpoint: boolean): DrawnCard {
@@ -168,7 +176,8 @@ export function reduceSession(s: DateSessionState, a: DateSessionAction): DateSe
     const pool = s.deck === 'custom' ? s.custom : [...PROMPTS, ...(s.extra ?? [])];
     const cur = s.current && !s.current.checkpoint ? pool.find((p) => p.id === s.current!.id) : undefined;
     const keep = !s.current || s.current.checkpoint || (cur && allowed(cur, a.settings, level));
-    return { ...s, settings: a.settings, current: keep ? s.current : null };
+    // New limits may let cards back in, so "no cards left" is re-checked on the next draw.
+    return { ...s, settings: a.settings, current: keep ? s.current : null, empty: false };
   }
   if (a.type === 'finish') return { ...s, status: 'finished', current: null, paused: false };
   if (s.paused || settingsProblems(s.settings).length) return null;

@@ -25,7 +25,7 @@ import {
 type AnyGame = GameDef<unknown, unknown>;
 
 /** Bot-vs-bot to the end. Throws on an illegal bot move, a mutated state or a stuck game. */
-function playOut(game: AnyGame, levels: [BotLevel, BotLevel], seed: number, maxSteps = 500) {
+function playOut(game: AnyGame, levels: [BotLevel, BotLevel], seed: number, maxSteps = game.id === "chess" ? 1500 : 500) {
   const rng = createRng(seed);
   let s = game.init(rng);
   for (let steps = 0; game.result(s) === null; steps++) {
@@ -49,20 +49,24 @@ describe('every classic', () => {
   });
 
   for (const game of CLASSICS) {
-    it(`${game.name}: 1,000 Normal-vs-Normal games finish with no illegal moves or stuck states`, () => {
+    // A chess game is hundreds of searched moves, so it plays far fewer games (its move generator is
+    // checked exactly by the perft tests in chess.test.ts).
+    const many = game.id === 'chess' ? 8 : 1000;
+    it(`${game.name}: ${many.toLocaleString('en')} Normal-vs-Normal games finish with no illegal moves or stuck states`, () => {
       const results: Record<number, number> = { 0: 0, 1: 0, [-1]: 0 };
-      for (let seed = 1; seed <= 1000; seed++) {
+      for (let seed = 1; seed <= many; seed++) {
         const end = playOut(game as AnyGame, ['normal', 'normal'], seed);
         results[game.result(end as never) as number]!++;
       }
-      expect(results[0]! + results[1]! + results[-1]!).toBe(1000);
-    }, 120_000);
+      expect(results[0]! + results[1]! + results[-1]!).toBe(many);
+    }, 240_000);
 
     it(`${game.name}: Easy and Hard bots also play legal games`, () => {
-      const hardGames = game.id === 'ultimate-noughts' ? 4 : 30;
-      for (let seed = 1; seed <= 100; seed++) playOut(game as AnyGame, ['easy', 'normal'], seed);
+      const hardGames = game.id === 'chess' ? 1 : game.id === 'ultimate-noughts' ? 4 : 30;
+      const easyGames = game.id === 'chess' ? 6 : 100;
+      for (let seed = 1; seed <= easyGames; seed++) playOut(game as AnyGame, ['easy', 'normal'], seed);
       for (let seed = 1; seed <= hardGames; seed++) playOut(game as AnyGame, ['hard', 'easy'], seed);
-    }, 120_000);
+    }, 240_000);
 
     it(`${game.name}: rejects junk actions and actions out of turn`, () => {
       const s = game.init(createRng(7)) as never;

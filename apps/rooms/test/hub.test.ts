@@ -174,8 +174,33 @@ describe('RoomHub', () => {
   it('rejects malformed messages', () => {
     const s = setup();
     s.hub.handle(s.host.conn, null);
-    s.hub.handle(s.host.conn, { type: 'create', game: 'chess' });
+    s.hub.handle(s.host.conn, { type: 'create', game: 'checkers' });
+    s.hub.handle(s.host.conn, { type: 'leave' }); // not in a room: ignored, not a crash
     expect(s.host.got.filter((m) => m.type === 'error')).toHaveLength(2);
+  });
+
+  it('Leave game mid-game hands the win over at once and the seat cannot be reclaimed', () => {
+    const s = seatUp('drop-four');
+    const token = s.guest.last('joined')!.token;
+    s.hub.handle(s.guest.conn, { type: 'leave' });
+    const st = s.host.last('state')!;
+    expect(st.forfeit).toBe(1);
+    expect(st.seats[1]).toMatchObject({ present: false, gone: true });
+    const back = client();
+    s.hub.handle(back.conn, { type: 'join', code: s.code, token });
+    expect(back.last('error')?.code).toBe('full');
+    s.hub.handle(s.host.conn, { type: 'rematch' });
+    expect(s.host.last('error')?.code).toBe('illegal');
+  });
+
+  it('a dropped connection (not Leave) can come back with its token from a new tab', () => {
+    const s = seatUp('chess');
+    const token = s.guest.last('joined')!.token;
+    s.hub.disconnect(s.guest.conn);
+    const tab = client();
+    s.hub.handle(tab.conn, { type: 'join', code: s.code, token });
+    expect(tab.last('joined')?.seat).toBe(1);
+    expect(tab.last('joined')?.game).toBe('chess');
   });
 });
 

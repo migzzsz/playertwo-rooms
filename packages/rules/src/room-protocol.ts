@@ -34,6 +34,8 @@ export type ClientMessage =
 export interface SeatInfo {
   name: string;
   present: boolean;
+  /** They pressed Leave: the seat is not coming back (no hold, no rematch). */
+  gone?: boolean;
 }
 
 export type ServerMessage =
