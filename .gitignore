@@ -1,0 +1,16 @@
+node_modules/
+.next/
+out/
+coverage/
+*.tsbuildinfo
+.env
+.env.local
+.env.*.local
+apps/web/test-results/
+apps/web/playwright-report/
+.DS_Store
+apps/web/tsconfig.tsbuildinfo
+docs/m1/*.webm
+.data/
+apps/web/originals/*/
+!apps/web/originals/dev-test/

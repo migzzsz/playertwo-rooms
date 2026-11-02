@@ -1,0 +1,24 @@
+{
+  "name": "@playertwo/rooms",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Authoritative WebSocket room server for two-device play. Reuses @playertwo/rules.",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/main.ts",
+    "start": "tsx src/main.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@playertwo/rules": "*",
+    "tsx": "4.23.15",
+    "ws": "8.22.0"
+  },
+  "devDependencies": {
+    "@types/node": "24.10.1",
+    "@types/ws": "8.18.1",
+    "typescript": "5.9.3",
+    "vitest": "5.0.5"
+  }
+}

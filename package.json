@@ -1,0 +1,12 @@
+{
+  "name": "playertwo-rooms",
+  "private": true,
+  "version": "0.1.0",
+  "description": "PlayerTwo room server: the WebSocket server for two-device play, with the game rules it uses. Copied from the main PlayerTwo repo.",
+  "workspaces": ["apps/rooms", "packages/rules"],
+  "engines": { "node": ">=20.9" },
+  "scripts": {
+    "start": "npm run start -w @playertwo/rooms",
+    "test": "npm run test --workspaces --if-present"
+  }
+}

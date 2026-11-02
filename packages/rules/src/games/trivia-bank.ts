@@ -1,0 +1,43 @@
+/**
+ * Trivia Duel question bank: the 36 questions from the prototype (prototype/games.js), including
+ * South African ones. Each entry is [question, correct answer, three wrong answers]. The spec moves
+ * the bank to a `trivia_questions` table later; this list seeds it.
+ */
+export const TRIVIA_BANK: ReadonlyArray<readonly [string, string, string, string, string]> = [
+  ["What is the largest planet in our solar system?", "Jupiter", "Saturn", "Neptune", "Earth"],
+  ["How many legs does a spider have?", "8", "6", "10", "12"],
+  ["What is the chemical symbol for gold?", "Au", "Ag", "Gd", "Go"],
+  ["Which is the largest ocean?", "Pacific", "Atlantic", "Indian", "Arctic"],
+  ["What is the capital of Australia?", "Canberra", "Sydney", "Melbourne", "Perth"],
+  ["How many players does a soccer team have on the field?", "11", "10", "9", "12"],
+  ["Who painted the Mona Lisa?", "Leonardo da Vinci", "Michelangelo", "Raphael", "Botticelli"],
+  ["What is the fastest land animal?", "Cheetah", "Lion", "Springbok", "Greyhound"],
+  ["How many continents are there?", "7", "5", "6", "8"],
+  ["Which planet is known as the Red Planet?", "Mars", "Venus", "Jupiter", "Mercury"],
+  ["At what temperature does water freeze, in °C?", "0", "32", "-10", "4"],
+  ["Which gas do plants take in from the air?", "Carbon dioxide", "Oxygen", "Nitrogen", "Helium"],
+  ["What is the longest river in Africa?", "Nile", "Congo", "Zambezi", "Niger"],
+  ["How many sides does a hexagon have?", "6", "5", "7", "8"],
+  ["What is the square root of 81?", "9", "8", "7", "11"],
+  ["In which country did the ancient Olympic Games start?", "Greece", "Italy", "Egypt", "France"],
+  ["What is the smallest prime number?", "2", "1", "3", "0"],
+  ["What is the capital of Japan?", "Tokyo", "Kyoto", "Osaka", "Seoul"],
+  ["Which organ pumps blood around the body?", "Heart", "Liver", "Lungs", "Kidneys"],
+  ["How many capital cities does South Africa have?", "3", "1", "2", "4"],
+  ["Table Mountain overlooks which city?", "Cape Town", "Durban", "Gqeberha", "Johannesburg"],
+  ["Mix blue and yellow paint and you get…", "Green", "Purple", "Orange", "Brown"],
+  ["Which instrument has 88 keys?", "Piano", "Harp", "Guitar", "Violin"],
+  ["Who wrote Romeo and Juliet?", "William Shakespeare", "Charles Dickens", "Jane Austen", "Mark Twain"],
+  ["What is the largest mammal?", "Blue whale", "African elephant", "Giraffe", "Orca"],
+  ["What do bees make?", "Honey", "Silk", "Pearls", "Maple syrup"],
+  ["At sea level, water boils at what °C?", "100", "90", "120", "80"],
+  ["Which planet is closest to the Sun?", "Mercury", "Venus", "Earth", "Mars"],
+  ["What language is mainly spoken in Brazil?", "Portuguese", "Spanish", "English", "French"],
+  ["How many strings does a standard guitar have?", "6", "4", "5", "8"],
+  ["The Big Five are lion, leopard, elephant, buffalo and…", "Rhino", "Giraffe", "Hippo", "Cheetah"],
+  ["How many days are in a leap year?", "366", "365", "364", "367"],
+  ["Which metal is liquid at room temperature?", "Mercury", "Lead", "Tin", "Zinc"],
+  ["What is the tallest animal in the world?", "Giraffe", "Elephant", "Ostrich", "Moose"],
+  ["Which shape has three sides?", "Triangle", "Square", "Pentagon", "Circle"],
+  ["Which country gifted the Statue of Liberty to the USA?", "France", "England", "Spain", "Canada"],
+];
